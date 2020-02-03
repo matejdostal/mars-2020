@@ -1,9 +1,13 @@
 const WebSocket = require("ws");
-const bluetooth = require("node-bluetooth");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 
+//==================================================================================
+
 const WEBSOCKET_PORT = 9030;
+const BLUETOOTH_ADDRESS = "98:D3:91:FD:3A:4B";
+
+//==================================================================================
 
 const sockets = {};
 let counter = 0;
@@ -59,9 +63,6 @@ const broadcastMessage = message => {
 
 //==================================================================================
 
-// const randomDistance = () => Math.random() * 10;
-// const randomAngle = () => Math.random() * 180;
-
 const computeX = (distance, angle) => Math.cos(angle) * distance;
 const computeY = (distance, angle) => Math.sin(angle) * distance;
 
@@ -73,92 +74,43 @@ const computeXY = (distance, angle) => ({
 const toFixedValue = (value, precision = 2) =>
   Math.round(value * 10 ** precision) / 10 ** precision;
 
-// setInterval(() => {
-//   try {
-//     const distance = randomDistance();
-//     const angle = randomAngle();
-//     const x = computeX(distance, angle);
-//     const y = computeY(distance, angle);
-//     const data = {
-//       distance: toFixedValue(distance),
-//       angle: toFixedValue(angle),
-//       x: toFixedValue(x),
-//       y: toFixedValue(y)
-//     };
-//     console.log(data);
-//     broadcastMessage(JSON.stringify(data));
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }, 200);
-
 //==================================================================================
 
-// const TARGET_DEVICE_ADDRESS = "98:D3:91:FD:3A:4B";
+const connectBluetoothDevice = async bluetoothPortInfo => {
+  const port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 });
+  const parser = new Readline();
+  port.pipe(parser);
+  parser.on("data", data => {
+    console.log(data);
+    try {
+      const [distance, angle] = JSON.parse(data);
+      const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+      broadcastMessage(
+        JSON.stringify({
+          x: toFixedValue(x),
+          y: toFixedValue(y),
+          distance,
+          angle
+        })
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};
 
-// const device = new bluetooth.DeviceINQ();
+const findBluetoothDevice = async bluetoothAddress => {
+  const portInfoList = await SerialPort.list();
+  const bluetoothPortInfo = portInfoList.find(
+    portInfo =>
+      portInfo.pnpId.indexOf(bluetoothAddress.split(":").join("")) != -1
+  );
+  if (!bluetoothPortInfo) {
+    throw new Error("HC-05 Bluetooth device not found");
+  }
+  return bluetoothPortInfo;
+};
 
-// device.listPairedDevices(pairedDevices => {
-//   pairedDevices.forEach(pairedDevice => {
-//     if (pairedDevice.address === TARGET_DEVICE_ADDRESS) {
-//       const { address, services } = pairedDevice;
-//       const channel = services[0].channel;
-//       bluetooth.connect(address, channel, (error, connection) => {
-//         if (error) {
-//           console.error(error);
-//           return;
-//         }
-//         connection.on("data", buffer => {
-//           processBuffer(buffer);
-//         });
-//       });
-//     }
-//   });
-// });
-
-// let textBuffer = ""; //first in first out
-// const processBuffer = buffer => {
-//   textBuffer += buffer.toString();
-//   while (textBuffer.indexOf("]") != -1) {
-//     const index = textBuffer.indexOf("]");
-//     const data = textBuffer.substr(0, index + 1);
-//     textBuffer = textBuffer.substr(index + 1);
-//     console.log(data);
-//     try {
-//       const [distance, angle] = JSON.parse(data);
-//       const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-//       broadcastMessage(
-//         JSON.stringify({
-//           x: toFixedValue(x),
-//           y: toFixedValue(y),
-//           distance,
-//           angle
-//         })
-//       );
-//     } catch (error) {}
-//   }
-// };
-
-//================================================================
-
-const path = "COM4";
-const port = new SerialPort(path, { baudRate: 256000 });
-
-const parser = new Readline();
-port.pipe(parser);
-
-parser.on("data", data => {
-  console.log(data);
-  try {
-    const [distance, angle] = JSON.parse(data);
-    const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-    broadcastMessage(
-      JSON.stringify({
-        x: toFixedValue(x),
-        y: toFixedValue(y),
-        distance,
-        angle
-      })
-    );
-  } catch (error) {}
-});
+findBluetoothDevice(BLUETOOTH_ADDRESS)
+  .then(connectBluetoothDevice)
+  .catch(console.error);
