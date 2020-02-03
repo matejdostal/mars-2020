@@ -1,5 +1,7 @@
 const WebSocket = require("ws");
 const bluetooth = require("node-bluetooth");
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
 
 const WEBSOCKET_PORT = 9030;
 
@@ -92,47 +94,71 @@ const toFixedValue = (value, precision = 2) =>
 
 //==================================================================================
 
-const TARGET_DEVICE_ADDRESS = "98:D3:91:FD:3A:4B";
+// const TARGET_DEVICE_ADDRESS = "98:D3:91:FD:3A:4B";
 
-const device = new bluetooth.DeviceINQ();
+// const device = new bluetooth.DeviceINQ();
 
-device.listPairedDevices(pairedDevices => {
-  pairedDevices.forEach(pairedDevice => {
-    if (pairedDevice.address === TARGET_DEVICE_ADDRESS) {
-      const { address, services } = pairedDevice;
-      const channel = services[0].channel;
-      bluetooth.connect(address, channel, (error, connection) => {
-        if (error) {
-          console.error(error);
-          return;
-        }
-        connection.on("data", buffer => {
-          processBuffer(buffer);
-        });
-      });
-    }
-  });
+// device.listPairedDevices(pairedDevices => {
+//   pairedDevices.forEach(pairedDevice => {
+//     if (pairedDevice.address === TARGET_DEVICE_ADDRESS) {
+//       const { address, services } = pairedDevice;
+//       const channel = services[0].channel;
+//       bluetooth.connect(address, channel, (error, connection) => {
+//         if (error) {
+//           console.error(error);
+//           return;
+//         }
+//         connection.on("data", buffer => {
+//           processBuffer(buffer);
+//         });
+//       });
+//     }
+//   });
+// });
+
+// let textBuffer = ""; //first in first out
+// const processBuffer = buffer => {
+//   textBuffer += buffer.toString();
+//   while (textBuffer.indexOf("]") != -1) {
+//     const index = textBuffer.indexOf("]");
+//     const data = textBuffer.substr(0, index + 1);
+//     textBuffer = textBuffer.substr(index + 1);
+//     console.log(data);
+//     try {
+//       const [distance, angle] = JSON.parse(data);
+//       const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+//       broadcastMessage(
+//         JSON.stringify({
+//           x: toFixedValue(x),
+//           y: toFixedValue(y),
+//           distance,
+//           angle
+//         })
+//       );
+//     } catch (error) {}
+//   }
+// };
+
+//================================================================
+
+const path = "COM4";
+const port = new SerialPort(path, { baudRate: 256000 });
+
+const parser = new Readline();
+port.pipe(parser);
+
+parser.on("data", data => {
+  console.log(data);
+  try {
+    const [distance, angle] = JSON.parse(data);
+    const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+    broadcastMessage(
+      JSON.stringify({
+        x: toFixedValue(x),
+        y: toFixedValue(y),
+        distance,
+        angle
+      })
+    );
+  } catch (error) {}
 });
-
-let textBuffer = ""; //first in first out
-const processBuffer = buffer => {
-  textBuffer += buffer.toString();
-  while (textBuffer.indexOf("]") != -1) {
-    const index = textBuffer.indexOf("]");
-    const data = textBuffer.substr(0, index + 1);
-    textBuffer = textBuffer.substr(index + 1);
-    console.log(data);
-    try {
-      const [distance, angle] = JSON.parse(data);
-      const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-      broadcastMessage(
-        JSON.stringify({
-          x: toFixedValue(x),
-          y: toFixedValue(y),
-          distance,
-          angle
-        })
-      );
-    } catch (error) {}
-  }
-};
