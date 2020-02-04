@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const bluetooth = require("node-bluetooth");
+// const bluetooth = require("node-bluetooth");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 
@@ -141,7 +141,7 @@ const toFixedValue = (value, precision = 2) =>
 
 //================================================================
 
-const path = "COM4";
+const path = "COM11";
 const port = new SerialPort(path, { baudRate: 256000 });
 
 const parser = new Readline();
@@ -160,5 +160,5 @@ parser.on("data", data => {
         angle
       })
     );
-  } catch (error) {}
+  } catch (error) { }
 });

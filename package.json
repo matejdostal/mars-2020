@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-bluetooth": "^1.2.6",
     "serialport": "^8.0.7",
     "ws": "^7.2.1"
   }
