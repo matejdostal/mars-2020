@@ -17,21 +17,22 @@ let server = new WebSocket.Server({
 });
 
 server.on("listening", () => {
-  console.log("SERVER IS LISTENING ON PORT %d", WEBSOCKET_PORT);
+  console.log("WEBSOCKET SERVER LISTENING ON PORT %d", WEBSOCKET_PORT);
+  initBluetoothDevice();
 });
 
 server.on("close", () => {
-  console.log("SERVER CLOSED");
+  console.log("WEBSOCKET SERVER CLOSED");
 });
 
 server.on("connection", socket => {
   const id = ++counter;
   sockets[id] = socket;
-  console.log("CLIENT (%d) CONNECTED TO SERVER", id);
+  console.log("CLIENT (%d) CONNECTED TO WEBSOCKET SERVER", id);
 
   socket.on("close", () => {
     delete sockets[id];
-    console.log("CLIENT (%d) DISCONNECTED FROM SERVER", id);
+    console.log("CLIENT (%d) DISCONNECTED FROM WEBSOCKET SERVER", id);
   });
 
   socket.on("message", message => {
@@ -45,7 +46,7 @@ server.on("connection", socket => {
 });
 
 server.on("error", error => {
-  console.log("SERVER ERROR: %s", error);
+  console.log("WEBSOCKET SERVER ERROR: %s", error);
 });
 
 const sendMessage = (id, message) => {
@@ -79,9 +80,10 @@ const toFixedValue = (value, precision = 2) =>
 const connectBluetoothDevice = async bluetoothPortInfo => {
   const port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 });
   const parser = new Readline();
+  console.log("BLUETOOTH DEVICE CONNECTED");
   port.pipe(parser);
   parser.on("data", data => {
-    console.log(data);
+    console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
     try {
       const [distance, angle] = JSON.parse(data);
       const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
@@ -100,17 +102,25 @@ const connectBluetoothDevice = async bluetoothPortInfo => {
 };
 
 const findBluetoothDevice = async bluetoothAddress => {
+  console.log("SEARCHING FOR BLUETOOTH DEVICE");
   const portInfoList = await SerialPort.list();
   const bluetoothPortInfo = portInfoList.find(
     portInfo =>
       portInfo.pnpId.indexOf(bluetoothAddress.split(":").join("")) != -1
   );
   if (!bluetoothPortInfo) {
-    throw new Error("HC-05 Bluetooth device not found");
+    throw new Error("BLUETOOTH DEVICE NOT FOUND, LET'S SEARCH AGAIN");
   }
   return bluetoothPortInfo;
 };
 
-findBluetoothDevice(BLUETOOTH_ADDRESS)
-  .then(connectBluetoothDevice)
-  .catch(console.error);
+const initBluetoothDevice = () => {
+  findBluetoothDevice(BLUETOOTH_ADDRESS)
+    .then(connectBluetoothDevice)
+    .catch(error => {
+      console.error("%s", error);
+      setTimeout(initBluetoothDevice, 1000);
+    });
+};
+
+// initBluetoothDevice();
