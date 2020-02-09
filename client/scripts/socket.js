@@ -1,5 +1,7 @@
 ﻿const WEB_SOCKET_SERVER_URL = "ws://localhost:9030";
 
+const data = [];
+
 let socket = null;
 
 const openConnection = (url = WEB_SOCKET_SERVER_URL) => {
@@ -26,6 +28,7 @@ const onClose = event => { };
 const onMessage = event => {
   const message = event.data;
   console.log(message);
+  data.push(message);
 };
 
 const onError = event => {
