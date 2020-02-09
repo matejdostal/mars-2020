@@ -1,17 +1,17 @@
 {
-  "name": "mars-2020",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "easystarjs": "^0.4.3",
-    "serialport": "^8.0.7",
-    "ws": "^7.2.1"
-  }
+    "name": "mars-2020",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server/server.js",
+    "scripts": {
+        "start": "node server/server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "easystarjs": "^0.4.3",
+        "serialport": "^8.0.7",
+        "ws": "^7.2.1"
+    }
 }
