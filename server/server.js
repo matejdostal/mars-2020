@@ -32,19 +32,6 @@ server.on("connection", socket => {
     sockets[id] = socket;
     console.log("CLIENT (%d) CONNECTED TO WEBSOCKET SERVER", id);
 
-<<<<<<< HEAD
-    // TEST -------------------------------------------------------------------------
-    let dataList = JSON.parse(fs.readFileSync(path.join(__dirname, "data.json")));
-    const sendData = () => {
-        const data = dataList.shift();
-        broadcastMessage(JSON.stringify(data));
-        if (dataList && dataList.length) {
-            setTimeout(sendData, 100);
-        }
-    };
-    if (dataList && dataList.length) sendData();
-    // TEST -------------------------------------------------------------------------
-=======
     // // TEST -------------------------------------------------------------------------
     // let dataList = JSON.parse(fs.readFileSync(path.join(__dirname, "data.json")));
     // const sendData = () => {
@@ -56,7 +43,6 @@ server.on("connection", socket => {
     // };
     // if (dataList && dataList.length) sendData();
     // // TEST -------------------------------------------------------------------------
->>>>>>> 79887853eca9c1d1eeadf0ada2776a9e9ab49bfa
 
     socket.on("close", () => {
         delete sockets[id];
@@ -100,7 +86,7 @@ const computeXY = (distance, angle) => ({
     y: computeY(distance, angle)
 });
 
-const toFixedValue = (value, precision = 2) => Math.round(value * 10 ** precision) / 10 ** precision;
+const toFixedValue = (value, precision = 5) => Math.round(value * 10 ** precision) / 10 ** precision;
 
 //==================================================================================
 

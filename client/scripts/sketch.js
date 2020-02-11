@@ -1,4 +1,3 @@
-
 //100px = 1m;
 //1px = 1cm;
 
@@ -28,13 +27,14 @@ function draw() {
     rover.draw();
     state.points.map((point, i) => {
         if (point && state.points[i - 1])
-            console.log(distanceBetweenTwoPoints(point.x, point.y, state.points[i - 1].x, state.points[i - 1].y));
-        point.draw();
+            // console.log(distanceBetweenTwoPoints(point.x, point.y, state.points[i - 1].x, state.points[i - 1].y));
+            point.draw();
     });
 }
 
 class Rover {
-    constructor(x, y, a) { //x position, y position, a rotation
+    constructor(x, y, a) {
+        //x position, y position, a rotation
         this.x = x;
         this.y = y;
         this.a = a;
@@ -58,8 +58,8 @@ class Rover {
 
 class Point {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = x * 200;
+        this.y = y * 200;
         this.size = 2;
     }
     draw() {
@@ -67,7 +67,5 @@ class Point {
         const y = this.y - this.size / 2;
         circle(x, y, this.size);
     }
-    connect() {
-
-    }
+    connect() {}
 }
