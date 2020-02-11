@@ -38,7 +38,7 @@ server.on("connection", socket => {
         const data = dataList.shift();
         broadcastMessage(JSON.stringify(data));
         if (dataList && dataList.length) {
-            setTimeout(sendData, 1000);
+            setTimeout(sendData, 100);
         }
     };
     if (dataList && dataList.length) sendData();

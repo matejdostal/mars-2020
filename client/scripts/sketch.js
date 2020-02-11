@@ -15,13 +15,20 @@ function setup() {
     translate(width / 2, height / 2);
 
     rover = new Rover(0, 0, 0);
-    points = [new Point(180, 0), new Point(180, -10), new Point(180, -20), new Point(170, -20), new Point(160, -20), new Point(150, -20)]; //  new Point(x, y)
+    // points = [new Point(180, 0), new Point(180, -10), new Point(180, -20), new Point(170, -20), new Point(160, -20), new Point(150, -20)]; //  new Point(x, y)
 }
 
 function draw() {
-    translate(width / 2, height / 2);
+    background(255);
+    translate(width / 2, height / 2); // sets [0, 0] to be in middle of canvas
+    // UPDATE
+    rover.update(state.rover.x, state.rover.y, state.rover.rotation);
+
+    // DRAW
     rover.draw();
-    points.map((point, i) => {
+    state.points.map((point, i) => {
+        if (point && state.points[i - 1])
+            console.log(distanceBetweenTwoPoints(point.x, point.y, state.points[i - 1].x, state.points[i - 1].y));
         point.draw();
     });
 }
@@ -38,8 +45,14 @@ class Rover {
         const x = this.x - this.width / 2;
         const y = this.y - this.height / 2;
         rotate(this.a);
-        rect(0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-        quad(x, y, x + 5, y - 8.66, x + 16, y - 8.66, x + this.width, y);
+        rect(0 - this.width / 2, 5, this.width, this.height);
+        rect(0, 0, 1, 1);
+        // quad(x, y, x + 5, y - 8.66, x + 16, y - 8.66, x + this.width, y);
+    }
+    update(x, y, a) {
+        this.x = x;
+        this.y = y;
+        this.a = a;
     }
 }
 

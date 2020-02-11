@@ -1,6 +1,13 @@
 ﻿const WEB_SOCKET_SERVER_URL = "ws://localhost:9030";
 
-const data = [];
+const state = {
+  rover: {
+    x: null,
+    y: null,
+    rotation: null
+  },
+  points: []
+};
 
 let socket = null;
 
@@ -27,8 +34,11 @@ const onClose = event => { };
 
 const onMessage = event => {
   const message = event.data;
-  console.log(message);
-  data.push(message);
+  const data = JSON.parse(message);
+  state.rover.x = data[0];
+  state.rover.y = data[1];
+  state.rover.rotation = data[2];
+  state.points.push(new Point(data[3], -data[4]));
 };
 
 const onError = event => {
