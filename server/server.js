@@ -32,26 +32,28 @@ server.on("connection", socket => {
     sockets[id] = socket;
     console.log("CLIENT (%d) CONNECTED TO WEBSOCKET SERVER", id);
 
-    // // TEST -------------------------------------------------------------------------
+    // TEST -------------------------------------------------------------------------
     // let dataList = JSON.parse(fs.readFileSync(path.join(__dirname, "data.json")));
+    // let timer = null;
     // const sendData = () => {
     //     const data = dataList.shift();
     //     broadcastMessage(JSON.stringify(data));
     //     if (dataList && dataList.length) {
-    //         setTimeout(sendData, 1000);
+    //         timer = setTimeout(sendData, 1000);
     //     }
     // };
     // if (dataList && dataList.length) sendData();
-    // // TEST -------------------------------------------------------------------------
+    // TEST -------------------------------------------------------------------------
 
     socket.on("close", () => {
+        // clearTimeout(timer);
         delete sockets[id];
         console.log("CLIENT (%d) DISCONNECTED FROM WEBSOCKET SERVER", id);
     });
 
     socket.on("message", message => {
         console.log("CLIENT (%d) SENT MESSAGE: %s", id, message);
-        broadcastMessage("RE: " + message);
+        // broadcastMessage("RE: " + message);
     });
 
     socket.on("error", error => {

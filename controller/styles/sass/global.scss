@@ -1,0 +1,105 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+.status {
+    font-size: 20px;
+    position: absolute;
+    left: 20px;
+    top: 16px;
+    font-weight: 500;
+
+    & span {
+        &.connected {
+            color: rgb(48, 173, 48);
+        }
+
+        &.disconnected {
+            color: rgb(192, 46, 46);
+        }
+
+        font-weight: 600;
+    }
+}
+
+.controller-container {
+    width: 60%;
+    max-width: 500px;
+    height: 500px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+        ". up ."
+        "left stop right"
+        ". down .";
+
+    &>span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & i {
+            font-size: 800%;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                color: #707070;
+            }
+
+            &:active {
+                color: #000;
+            }
+        }
+    }
+}
+
+.controller-up {
+    grid-area: up;
+
+    & i {
+        transform: rotate(-90deg);
+    }
+}
+
+.controller-down {
+    grid-area: down;
+
+    & i {
+        transform: rotate(90deg);
+    }
+}
+
+.controller-left {
+    grid-area: left;
+
+    & i {
+        transform: rotate(180deg);
+    }
+}
+
+.controller-right {
+    grid-area: right;
+}
+
+.controller-stop {
+    grid-area: stop;
+}
+
+@media only screen and (max-width: 500px) {
+    .controller-container {
+        width: 100%;
+    }
+}

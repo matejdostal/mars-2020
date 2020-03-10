@@ -60,12 +60,12 @@ class Point {
     constructor(x, y) {
         this.x = x * 200;
         this.y = y * 200;
-        this.size = 2;
+        this.size = 5;
     }
     draw() {
         const x = this.x - this.size / 2;
         const y = this.y - this.size / 2;
         circle(x, y, this.size);
     }
-    connect() {}
+    connect() { }
 }

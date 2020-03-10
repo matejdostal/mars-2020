@@ -1,14 +1,5 @@
 ﻿const WEB_SOCKET_SERVER_URL = "ws://localhost:9030";
 
-const state = {
-    rover: {
-        x: null,
-        y: null,
-        rotation: null
-    },
-    points: []
-};
-
 let socket = null;
 
 const openConnection = (url = WEB_SOCKET_SERVER_URL) => {
@@ -29,16 +20,27 @@ const sendMessage = message => {
 };
 
 const onOpen = event => {
-    // console.log('NOW');
+    const statusEl = document.querySelector('#status-span');
+    statusEl.classList.remove('disconnected');
+    statusEl.classList.add('connected');
+    statusEl.innerHTML = "Connected";
 };
 
 const onClose = event => {
-
+    const statusEl = document.querySelector('#status-span');
+    statusEl.classList.add('disconnected');
+    statusEl.classList.remove('connected');
+    statusEl.innerHTML = "Disconnected";
 };
 
 const onMessage = event => {
     const message = event.data;
-    const data = JSON.parse(message);
+    var data;
+    try {
+        data = JSON.parse(message);
+    } catch (e) {
+        data = message;
+    }
     console.log("HANDLE DATA: %j", data);
 };
 
