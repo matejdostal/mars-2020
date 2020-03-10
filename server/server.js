@@ -54,6 +54,7 @@ server.on("connection", socket => {
     socket.on("message", message => {
         console.log("CLIENT (%d) SENT MESSAGE: %s", id, message);
         // broadcastMessage("RE: " + message);
+        writeToBluetoothDevice(message);
     });
 
     socket.on("error", error => {
@@ -92,8 +93,10 @@ const toFixedValue = (value, precision = 5) => Math.round(value * 10 ** precisio
 
 //==================================================================================
 
+let port = null;
+
 const connectBluetoothDevice = async bluetoothPortInfo => {
-    const port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 });
+    port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 });
     const parser = new Readline();
     console.log("BLUETOOTH DEVICE CONNECTED");
     port.pipe(parser);
@@ -135,4 +138,10 @@ const initBluetoothDevice = () => {
             console.error("%s", error);
             setTimeout(initBluetoothDevice, 1000);
         });
+};
+
+const writeToBluetoothDevice = message => {
+    if (port) {
+        port.write(message);
+    }
 };
