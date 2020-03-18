@@ -102,26 +102,27 @@ const connectBluetoothDevice = async bluetoothPortInfo => {
     port.pipe(parser);
     parser.on("data", data => {
         console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
-        try {
-            const [distance, angle] = JSON.parse(data);
-            const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-            broadcastMessage(
-                JSON.stringify({
-                    x: toFixedValue(x),
-                    y: toFixedValue(y),
-                    distance,
-                    angle
-                })
-            );
-        } catch (error) {
-            console.error(error);
-        }
+        // try {
+        //     const [distance, angle] = JSON.parse(data);
+        //     const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+        //     broadcastMessage(
+        //         JSON.stringify({
+        //             x: toFixedValue(x),
+        //             y: toFixedValue(y),
+        //             distance,
+        //             angle
+        //         })
+        //     );
+        // } catch (error) {
+        //     console.error(error);
+        // }
     });
 };
 
 const findBluetoothDevice = async bluetoothAddress => {
     console.log("SEARCHING FOR BLUETOOTH DEVICE");
     const portInfoList = await SerialPort.list();
+    // console.log(portInfoList); return;
     const bluetoothPortInfo = portInfoList.find(
         portInfo => portInfo.pnpId.indexOf(bluetoothAddress.split(":").join("")) != -1
     );

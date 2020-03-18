@@ -8,7 +8,14 @@
 </head>
 
 <body>
-    <header class="status">Status: <span class="disconnected" id="status-span">Disconnected</span></header>
+    <header class="status">
+        <div>
+            Status: <span class="disconnected" id="status-span">Disconnected</span>
+        </div>
+        <i class="material-icons" id="refresh">
+            refresh
+        </i>
+    </header>
     <div class="controller-container">
         <span class="controller-up">
             <i class="material-icons" id="up">
@@ -33,6 +40,21 @@
         <span class="controller-stop">
             <i class="material-icons" id="stop">
                 stop
+            </i>
+        </span>
+        <span class="controller-head-left">
+            <i class="material-icons" id="head-left">
+                subdirectory_arrow_right
+            </i>
+        </span>
+        <span class="controller-head-right">
+            <i class="material-icons" id="head-right">
+                subdirectory_arrow_right
+            </i>
+        </span>
+        <span class="controller-reset">
+            <i class="material-icons" id="reset">
+                settings_backup_restore
             </i>
         </span>
     </div>

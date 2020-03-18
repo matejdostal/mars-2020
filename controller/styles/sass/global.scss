@@ -13,11 +13,15 @@ body {
 }
 
 .status {
+    width: calc(100% - 40px);
     font-size: 20px;
     position: absolute;
     left: 20px;
     top: 16px;
     font-weight: 500;
+
+    display: flex;
+    justify-content: space-between;
 
     & span {
         &.connected {
@@ -41,9 +45,9 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-areas:
-        ". up ."
+        "head-left up head-right"
         "left stop right"
-        ". down .";
+        ". down reset";
 
     &>span {
         display: flex;
@@ -96,6 +100,55 @@ body {
 
 .controller-stop {
     grid-area: stop;
+}
+
+#refresh {
+    font-size: 30px;
+    user-select: none;
+    cursor: pointer;
+
+    &.rotate {
+        animation-name: spin;
+        animation-duration: 1000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+}
+
+.controller-head-right {
+    grid-area: head-right;
+
+    & i {
+        transform: scaleY(-1);
+        font-size: 600% !important;
+    }
+}
+
+.controller-reset {
+    grid-area: reset;
+
+    & i {
+        font-size: 600% !important;
+    }
+}
+
+.controller-head-left {
+    grid-area: head-left;
+
+    & i {
+        transform: rotate(180deg);
+        font-size: 600% !important;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media only screen and (max-width: 500px) {

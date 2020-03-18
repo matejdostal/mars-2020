@@ -11,6 +11,8 @@ const openConnection = (url = WEB_SOCKET_SERVER_URL) => {
 };
 
 const closeConnection = () => {
+    const refreshEl = document.querySelector('#refresh');
+    refreshEl.classList.remove('rotate');
     socket.close();
     socket = null;
 };
@@ -21,6 +23,8 @@ const sendMessage = message => {
 
 const onOpen = event => {
     const statusEl = document.querySelector('#status-span');
+    const refreshEl = document.querySelector('#refresh');
+    refreshEl.classList.remove('rotate');
     statusEl.classList.remove('disconnected');
     statusEl.classList.add('connected');
     statusEl.innerHTML = "Connected";
@@ -28,6 +32,8 @@ const onOpen = event => {
 
 const onClose = event => {
     const statusEl = document.querySelector('#status-span');
+    const refreshEl = document.querySelector('#refresh');
+    refreshEl.classList.remove('rotate');
     statusEl.classList.add('disconnected');
     statusEl.classList.remove('connected');
     statusEl.innerHTML = "Disconnected";
@@ -48,4 +54,20 @@ const onError = event => {
     console.error(error);
 };
 
-openConnection();
+(() => {
+    if (!socket) {
+        const newSocketInterval = setInterval(() => {
+            openConnection();
+            clearInterval(newSocketInterval);
+        }, 1000);
+    }
+})();
+
+// (() => {
+//     setInterval(() => {
+//         console.log(socket);
+//         if (!socket) {
+//             openConnection();
+//         }
+//     }, 1000)
+// })();
