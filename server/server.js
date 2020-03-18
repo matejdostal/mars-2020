@@ -96,26 +96,34 @@ const toFixedValue = (value, precision = 5) => Math.round(value * 10 ** precisio
 let port = null;
 
 const connectBluetoothDevice = async bluetoothPortInfo => {
-    port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 });
-    const parser = new Readline();
-    console.log("BLUETOOTH DEVICE CONNECTED");
-    port.pipe(parser);
-    parser.on("data", data => {
-        console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
-        // try {
-        //     const [distance, angle] = JSON.parse(data);
-        //     const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-        //     broadcastMessage(
-        //         JSON.stringify({
-        //             x: toFixedValue(x),
-        //             y: toFixedValue(y),
-        //             distance,
-        //             angle
-        //         })
-        //     );
-        // } catch (error) {
-        //     console.error(error);
-        // }
+    port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 }, error => {
+        if (error) {
+            console.log("%s", error);
+            port = null;
+            setTimeout(() => connectBluetoothDevice(bluetoothPortInfo), 1000);
+            return;
+        } else {
+            const parser = new Readline();
+            console.log("BLUETOOTH DEVICE CONNECTED");
+            port.pipe(parser);
+            parser.on("data", data => {
+                console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
+                // try {
+                //     const [distance, angle] = JSON.parse(data);
+                //     const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+                //     broadcastMessage(
+                //         JSON.stringify({
+                //             x: toFixedValue(x),
+                //             y: toFixedValue(y),
+                //             distance,
+                //             angle
+                //         })
+                //     );
+                // } catch (error) {
+                //     console.error(error);
+                // }
+            });
+        }
     });
 };
 
