@@ -10,6 +10,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "colors": "^1.4.0",
         "easystarjs": "^0.4.3",
         "serialport": "^8.0.7",
         "ws": "^7.2.1"

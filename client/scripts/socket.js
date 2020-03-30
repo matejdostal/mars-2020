@@ -39,6 +39,7 @@ const onClose = event => {
 const onMessage = event => {
     const message = event.data;
     const data = JSON.parse(message);
+    points.push([data.x, -data.y]);
     console.log("HANDLE DATA: %j", data);
 };
 

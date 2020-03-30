@@ -3,6 +3,7 @@ const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 const fs = require("fs");
 const path = require("path");
+const colors = require('colors');
 
 //==================================================================================
 
@@ -19,7 +20,7 @@ let server = new WebSocket.Server({
 });
 
 server.on("listening", () => {
-    console.log("WEBSOCKET SERVER LISTENING ON PORT %d", WEBSOCKET_PORT);
+    console.log("WEBSOCKET SERVER LISTENING ON PORT %d".yellow, WEBSOCKET_PORT);
     initBluetoothDevice();
 });
 
@@ -30,7 +31,7 @@ server.on("close", () => {
 server.on("connection", socket => {
     const id = ++counter;
     sockets[id] = socket;
-    console.log("CLIENT (%d) CONNECTED TO WEBSOCKET SERVER", id);
+    console.log("CLIENT (%d) CONNECTED TO WEBSOCKET SERVER".yellow, id);
 
     // TEST -------------------------------------------------------------------------
     // let dataList = JSON.parse(fs.readFileSync(path.join(__dirname, "data.json")));
@@ -48,12 +49,11 @@ server.on("connection", socket => {
     socket.on("close", () => {
         // clearTimeout(timer);
         delete sockets[id];
-        console.log("CLIENT (%d) DISCONNECTED FROM WEBSOCKET SERVER", id);
+        console.log("CLIENT (%d) DISCONNECTED FROM WEBSOCKET SERVER".yellow, id);
     });
 
     socket.on("message", message => {
         console.log("CLIENT (%d) SENT MESSAGE: %s", id, message);
-        // broadcastMessage("RE: " + message);
         writeToBluetoothDevice(message);
     });
 
@@ -94,48 +94,84 @@ const toFixedValue = (value, precision = 5) => Math.round(value * 10 ** precisio
 //==================================================================================
 
 let port = null;
+// let findingBluetoothIndex = 1;
+
+// const getEllipsis = () => {
+//     let str = '';
+//     for (let i = 0; i < findingBluetoothIndex; i++) {
+//         str += '.';
+//     }
+//     return str;
+// }
 
 const connectBluetoothDevice = async bluetoothPortInfo => {
-    port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 }, error => {
-        if (error) {
-            console.log("%s", error);
-            port = null;
-            setTimeout(() => connectBluetoothDevice(bluetoothPortInfo), 1000);
-            return;
+    port = new SerialPort(bluetoothPortInfo.path, { baudRate: 9600 }, err => {
+        if (err) {
+            console.log(`${err}`.red);
+            connectBluetoothDevice(bluetoothPortInfo);
         } else {
+            console.log('BLUETOOTH CONNECTED'.green);
             const parser = new Readline();
-            console.log("BLUETOOTH DEVICE CONNECTED");
             port.pipe(parser);
             parser.on("data", data => {
                 console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
-                // try {
-                //     const [distance, angle] = JSON.parse(data);
-                //     const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
-                //     broadcastMessage(
-                //         JSON.stringify({
-                //             x: toFixedValue(x),
-                //             y: toFixedValue(y),
-                //             distance,
-                //             angle
-                //         })
-                //     );
-                // } catch (error) {
-                //     console.error(error);
-                // }
+                try {
+                    const [distance, angle] = JSON.parse(data);
+                    const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+                    broadcastMessage(
+                        JSON.stringify({
+                            x: toFixedValue(x),
+                            y: toFixedValue(y),
+                            distance,
+                            angle
+                        })
+                    );
+                } catch (error) {
+                    console.error(error);
+                }
             });
         }
+        // if (error) {
+        //     console.log(error);
+        //     // process.stdout.write(`\x1Bc\rSearching for bluetooth device${getEllipsis()}  `.blue);
+        //     // findingBluetoothIndex = findingBluetoothIndex < 3 ? ++findingBluetoothIndex : 1;
+        //     port = null;
+        //     setTimeout(() => connectBluetoothDevice(bluetoothPortInfo), 1000);
+        //     return;
+        // } else {
+        //     const parser = new Readline();
+        //     console.log("BLUETOOTH DEVICE CONNECTED".green);
+        //     port.pipe(parser);
+        //     parser.on("data", data => {
+        //         console.log("DATA RECEIVED FROM BLUETOOTH: %s", data);
+        //         // try {
+        //         //     const [distance, angle] = JSON.parse(data);
+        //         //     const { x, y } = computeXY(distance / 100, angle * (Math.PI / 180));
+        //         //     broadcastMessage(
+        //         //         JSON.stringify({
+        //         //             x: toFixedValue(x),
+        //         //             y: toFixedValue(y),
+        //         //             distance,
+        //         //             angle
+        //         //         })
+        //         //     );
+        //         // } catch (error) {
+        //         //     console.error(error);
+        //         // }
+        //     });
+        // }
     });
 };
 
 const findBluetoothDevice = async bluetoothAddress => {
-    console.log("SEARCHING FOR BLUETOOTH DEVICE");
+    console.log("SEARCHING FOR BLUETOOTH DEVICE".blue);
+    // process.stdout.write(`\x1Bc\rSearching for bluetooth device.  `.blue);
     const portInfoList = await SerialPort.list();
-    // console.log(portInfoList); return;
     const bluetoothPortInfo = portInfoList.find(
         portInfo => portInfo.pnpId.indexOf(bluetoothAddress.split(":").join("")) != -1
     );
     if (!bluetoothPortInfo) {
-        throw new Error("BLUETOOTH DEVICE NOT FOUND, LET'S SEARCH AGAIN");
+        console.log('BLUETOOTH DEVICE NOT PAIRED'.red);
     }
     return bluetoothPortInfo;
 };
@@ -150,7 +186,5 @@ const initBluetoothDevice = () => {
 };
 
 const writeToBluetoothDevice = message => {
-    if (port) {
-        port.write(message);
-    }
+    if (port) port.write(message);
 };
