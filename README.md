@@ -1,6 +1,6 @@
 # Mars rover 2020 - Student work
 
-<img src="http://dennikc.sk/mars-rover-pictures/rover.jpg">
+<img src="http://dennikc.sk/mars-rover-pictures/rover.jpg" style="width: 300px; float: right; z-index:">
 
 ## Sections
 ##### Arduino
