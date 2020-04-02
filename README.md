@@ -7,13 +7,13 @@
 
 ## Sections
 > ##### [Arduino](./arduino/controller.ino)
-- Code written in ++Arduino++
+- Code written in __Arduino__
 - Radar, Movement
 - Bluetooth communication
 - LIDAR senzors
         
 > ##### [Server](./server)
-- ++Node.js++
+- __Node.js__
 - Arduino-Server, Server-Client connections
 - Polar to Kartesian coordinates
 - Serialport, WebSockets
@@ -22,7 +22,7 @@
 <img src="http://dennikc.sk/mars-rover-pictures/hallway.png"  align="right" width=300>
         
 > ##### [Client](./client)
-- ++JavaScript++
+- __JavaScript__
 - Map creating
 - p5.js
 - Retrieving data from Server
