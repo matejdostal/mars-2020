@@ -2,6 +2,7 @@
 
 > __Objectives__:
          Robot creating environment maps, autonomous driving, LIDAR sensors </br>
+> [__Learn more__](./soc.docx)
 
 <img src="http://dennikc.sk/mars-rover-pictures/rover.jpg"  align="right" width=350>
 
