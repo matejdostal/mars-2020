@@ -16,7 +16,7 @@
 > ##### [Server](./server)
 - __Node.js__
 - Arduino-Server, Server-Client connections
-- Polar to Kartesian coordinates
+- Polar to Cartesian coordinates
 - Serialport, WebSockets
 
 <img src="http://dennikc.sk/mars-rover-pictures/kitchen.png"  align="right" width=300>
@@ -39,5 +39,5 @@
 - Walls created using Linear regression - [Demo](./server/linear_regression.js)
 - 6 wheels, 360 wheels rotation
 - Controller UI update
-- Stronger wheels, better sensors
-- Multiple Arduino modes
+- Wheels torque, sensors
+- Multiple Arduino modes/programms
