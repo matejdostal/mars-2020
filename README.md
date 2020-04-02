@@ -1,6 +1,6 @@
 # Mars Rover 2020 - Student work
 
-Objectives:
+>> Objectives:
         => Robot creating environment maps, autonomous driving, LIDAR sensors </br>
 
 <img src="http://dennikc.sk/mars-rover-pictures/rover.jpg"  align="right" width=350>
