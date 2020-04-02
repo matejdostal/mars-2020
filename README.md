@@ -1,4 +1,7 @@
 # Mars rover 2020 - Student work
+
+<img src="http://dennikc.sk/mars-rover-pictures/rover.jpg">
+
 ## Sections
 ##### Arduino
 - Code written in ++Arduino++
@@ -26,5 +29,6 @@
 - Autonomous movement
 - Linear regression walls
 - 6 wheels, 360 wheels rotation
-- Controller UI upgrade
+- Controller UI update
 - Stronger wheels, better sensors
+- Multiple Arduino modes
