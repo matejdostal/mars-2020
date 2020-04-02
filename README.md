@@ -6,13 +6,13 @@ Objectives:
 <img src="http://dennikc.sk/mars-rover-pictures/rover.jpg"  align="right" width=350>
 
 ## Sections
-##### [Arduino](./arduino/controller.ino)
+> ##### [Arduino](./arduino/controller.ino)
 - Code written in ++Arduino++
 - Radar, Movement
 - Bluetooth communication
 - LIDAR senzors
         
-##### [Server](./server)
+> ##### [Server](./server)
 - ++Node.js++
 - Arduino-Server, Server-Client connections
 - Polar to Kartesian coordinates
@@ -21,13 +21,13 @@ Objectives:
 <img src="http://dennikc.sk/mars-rover-pictures/kitchen.png"  align="right" width=300>
 <img src="http://dennikc.sk/mars-rover-pictures/hallway.png"  align="right" width=300>
         
-##### [Client](./client)
+> ##### [Client](./client)
 - ++JavaScript++
 - Map creating
 - p5.js
 - Retrieving data from Server
         
-##### Controller
+##### [Controller](./controller)
 - Sending commands to Server
 - Rover movements
 
